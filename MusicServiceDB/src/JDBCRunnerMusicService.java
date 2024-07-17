@@ -14,16 +14,18 @@ public class JDBCRunnerMusicService {
             checkDriver();
             checkDB();
 
-             displayAllArtists(conn);
-             System.out.println();
-             addArtist(conn, "Putin", 30);
-             addAlbum(conn, "New Album", 16, "2024-07-17", "Pop", 0);
-             displayMostPopularAlbum(conn);
-             displayAlbumsByArtist(conn, 1);
-             displayYoungerArtists(conn, 30);
-             displaySongsByArtistAndAlbum(conn, 1, 1, 300);
-             displayPopularGenresByArtist(conn, 1);
-             deleteAlbum(conn, "New Album");
+//            displayAllArtists(conn);
+//            System.out.println();
+//            addArtist(conn, "Putin", 30);
+//            addAlbum(conn, "New Album", 16, "2024-07-17", "Pop", 0);
+//            displayMostPopularAlbum(conn);
+//            displayAlbumsByArtist(conn, 1);
+//            displayYoungerArtists(conn, 30);
+//            displaySongsByArtistAndAlbum(conn, 1, 1, 300);
+//            displayPopularGenresByArtist(conn, 1);
+//            deleteAlbum(conn, "New Album");
+            displayMostPopularAlbumForArtist(conn, 7);
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -169,6 +171,23 @@ public class JDBCRunnerMusicService {
             pstmt.setString(1, albumName);
             int affectedRows = pstmt.executeUpdate();
             System.out.println("Удалено альбомов: " + affectedRows);
+        }
+    }
+
+    public static void displayMostPopularAlbumForArtist(Connection conn, int artistId) throws SQLException {
+        String sql = "SELECT * FROM Albums WHERE id_artist = ? ORDER BY num_of_listens DESC LIMIT 1";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, artistId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String date = rs.getString("date");
+                String genre = rs.getString("genre");
+                long num_of_listens = rs.getLong("num_of_listens");
+                System.out.println("Most Popular Album for Artist " + artistId + ":");
+                System.out.println("ID: " + id + ", Name: " + name + ", Date: " + date + ", Genre: " + genre + ", Listens: " + num_of_listens);
+            }
         }
     }
 }
